@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 
 
@@ -51,7 +52,12 @@ getData();
         title: Text('Poke App'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: (){
+          setState(() {
+            pokemonItems.clear();
+            getData();
+          });
+        },
         child: const Icon(Icons.repeat_on_outlined),
       ),
 
@@ -71,12 +77,10 @@ getData();
                       imgUrl: pokemon['img'],
                     );
                   }).toList());
-
-
               }else if (snapshot.hasError){
                 return Text('${snapshot.error}');
               }
-              return Center(child:CircularProgressIndicator() ,);
+              return const CircularProgressIndicator();
             },
 
         )
@@ -118,9 +122,11 @@ class Item extends StatelessWidget {
         child:
         Column(
           children: [
-            ImageNetwork(image: imgUrl, height: 180, width: 180),
-            SizedBox(height: 10,),
-            Text(name,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+            CachedNetworkImage(imageUrl: imgUrl, height: 140, width: 140,
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),),
+            SizedBox(height: 1,),
+            Text(name,style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
           ],
         ),
       ),
